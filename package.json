@@ -1,0 +1,27 @@
+{
+  "name": "blackmagic-wizard",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "commandkit dev",
+    "build": "commandkit build",
+    "start": "commandkit start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@types/node": "^20.14.12",
+    "commandkit": "^0.1.10",
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.4",
+    "spotify-web-api-node": "^5.0.2",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/spotify-web-api-node": "^5.0.11",
+    "typescript": "^5.5.4"
+  }
+}
