@@ -43,23 +43,37 @@ export async function checkPlaylist() {
       const channel = client.channels.cache.get(CHANNEL_ID) as TextChannel;
 
       for (const track of newTracks) {
-        const artistData = await spotifyApi.getArtist(`${track.track?.artists[0]?.id}`);
+        const artistData = await spotifyApi.getArtist(
+          `${track.track?.artists[0]?.id}`
+        );
         let artistImageUrl = artistData.body.images[0]?.url;
         if (!artistImageUrl) {
-            artistImageUrl = PLAYLIST_IMAGE
+          artistImageUrl = PLAYLIST_IMAGE;
+        }
+
+        let featuredArtists = track.track?.artists
+          .slice(1)
+          .map((artist) => {
+            return `[${artist.name}](https://open.spotify.com/artist/${artist.id})`;
+          })
+          .join(", ");
+        if (!featuredArtists) {
+          featuredArtists = "No features on this song";
         }
 
         const trackName = track.track?.name;
         const artistName = track.track?.artists[0]?.name;
-        
+        const trackImage = track.track?.album.images[0]?.url;
+
         const SongEmbed = new EmbedBuilder()
-        .setThumbnail(artistImageUrl)
-          .setImage(`${track.track?.album.images[0]?.url}`)
+          .setThumbnail(`${trackImage}`)
+          // .setImage(`${trackImage ? trackImage : PLAYLIST_IMAGE}`)
           .setAuthor({
             name: "Black Magic Track",
-            url: "https://open.spotify.com/playlist/1B1eXopWYYLQeCsf6RTuVL?si=d3141ddf83474a60",
+            url: "https://open.spotify.com/playlist/1B1eXopWYYLQeCsf6RTuVL",
+            iconURL: artistImageUrl,
           })
-          .setTitle("New Song Added") //
+          .setTitle("New Song Added")
           .addFields(
             {
               name: "Title",
@@ -70,10 +84,16 @@ export async function checkPlaylist() {
               name: "Artist",
               value: `[${artistName}](https://open.spotify.com/artist/${track.track?.artists[0]?.id})`,
               inline: true,
+            },
+            {
+              name: "Features",
+              value: `${featuredArtists}`,
             }
           )
           .setColor("Random")
+          .setFooter({ text: "BMC", iconURL: `${PLAYLIST_IMAGE}` })
           .setTimestamp();
+
         await channel.send({ embeds: [SongEmbed] });
       }
 

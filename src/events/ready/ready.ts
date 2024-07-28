@@ -6,5 +6,5 @@ export default async function (c: Client<true>, client: Client<true>, handler: C
     console.log(`${c.user.username} is ready!`);
     await getAccessToken()
     checkPlaylist()
-    setInterval(checkPlaylist, 600000)
+    setInterval(checkPlaylist, 10000)
 };
