@@ -17,8 +17,6 @@ const client = new Client({
     ]
 });
 
-export {client}
-
 new CommandKit({
     client,
     eventsPath: `${dirname}/events`,
