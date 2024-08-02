@@ -13,6 +13,9 @@
     "strict": true,
     "declaration": false,
     "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "outDir": "./dist",
     "rootDir": "./src",
   },

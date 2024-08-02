@@ -16,6 +16,7 @@ const client = new Client({
         IntentsBitField.Flags.MessageContent
     ]
 });
+export {client}
 
 new CommandKit({
     client,
