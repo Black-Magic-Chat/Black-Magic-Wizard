@@ -1,7 +1,9 @@
+import { currentPrefix } from "@/utils/prefixConfig";
 import { type Message, EmbedBuilder } from "discord.js";
 
 export default async function (message: Message<true>) {
-    if (message.content.startsWith("!roleInfo")) {
+    const prefix = await currentPrefix();
+    if (message.content.startsWith(prefix + "roleInfo")) {
         if (!message.guild) return;
 
         const roleId = message.content.split(" ")[1];

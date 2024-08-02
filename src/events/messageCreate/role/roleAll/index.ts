@@ -1,7 +1,9 @@
+import { currentPrefix } from "@/utils/prefixConfig";
 import { type Message, EmbedBuilder } from "discord.js";
 
 export default function (message: Message<true>) {
-    if (message.content.startsWith("!roleAll")) {
+    const prefix = currentPrefix()
+    if (message.content.startsWith(prefix + "roleAll")) {
         if (!message.member?.permissions.has("ManageRoles")) {
             return message.reply("You do not have sufficient permissions to manage roles.");
         }

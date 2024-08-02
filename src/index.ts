@@ -1,10 +1,10 @@
-import 'dotenv/config';
+import "dotenv/config";
 
-import { Client, IntentsBitField } from 'discord.js';
-import { CommandKit } from 'commandkit';
+import { Client, IntentsBitField } from "discord.js";
+import { CommandKit } from "commandkit";
 
-import { dirname as dn } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { dirname as dn } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const dirname = dn(fileURLToPath(import.meta.url));
 
@@ -16,13 +16,15 @@ const client = new Client({
         IntentsBitField.Flags.MessageContent
     ]
 });
-export {client}
+export { client };
 
 new CommandKit({
     client,
     eventsPath: `${dirname}/events`,
     commandsPath: `${dirname}/commands`,
-    bulkRegister: true
+    bulkRegister: true,
+    devGuildIds: ["1249773101185630259"],
+    devUserIds: ["953708302058012702"]
 });
 
 client.login(process.env.TOKEN);

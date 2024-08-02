@@ -1,11 +1,17 @@
 import SpotifyWebApi from "spotify-web-api-node";
 import { TextChannel, EmbedBuilder } from "discord.js";
 import { client } from "..";
+import 'dotenv/config'
 
 const spotifyApi = new SpotifyWebApi({
   clientId: process.env.SPOTIFY_CLIENT_ID,
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
+
+const PLAYLIST_ID = "1B1eXopWYYLQeCsf6RTuVL";
+const CHANNEL_ID = "1250052890991788144";
+const PLAYLIST_IMAGE =
+  "https://media.discordapp.net/attachments/1249776327456854048/1266847146645393458/bmc.png?ex=66a6a2d8&is=66a55158&hm=30e6fb08f3cd94e7067b0cd6a7bc474247e0f270d2d4910a2d47e0bf8343edb4&=&format=webp&quality=lossless&width=383&height=385";
 
 let lastTracks: (string | undefined)[] = [];
 
@@ -20,7 +26,7 @@ export async function getAccessToken() {
 
 export async function checkPlaylist(): Promise<void> {
   try {
-    const data = await spotifyApi.getPlaylistTracks(process.env.PLAYLIST_ID!);
+    const data = await spotifyApi.getPlaylistTracks(PLAYLIST_ID);
     const tracks = data.body.items;
 
     const currentTracks = tracks.map((track) => track.track?.id);
@@ -35,7 +41,7 @@ export async function checkPlaylist(): Promise<void> {
     );
 
     if (newTracks.length > 0) {
-      const channel = client.channels.cache.get(process.env.CHANNEL_ID!) as TextChannel;
+      const channel = client.channels.cache.get(CHANNEL_ID) as TextChannel;
 
       for (const track of newTracks) {
         const artistData = await spotifyApi.getArtist(
@@ -86,7 +92,7 @@ export async function checkPlaylist(): Promise<void> {
             }
           )
           .setColor("Random")
-          .setFooter({ text: "BMC", iconURL: `${process.env.PLAYLIST_IMAGE!}` })
+          .setFooter({ text: "BMC", iconURL: `${PLAYLIST_IMAGE}` })
           .setTimestamp();
 
         await channel.send({ embeds: [SongEmbed] });

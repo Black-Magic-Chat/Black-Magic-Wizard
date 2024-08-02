@@ -1,3 +1,4 @@
+import { currentPrefix } from "@/utils/prefixConfig";
 import { type Message } from "discord.js";
 
 const responses = [
@@ -29,7 +30,8 @@ const responses = [
 ];
 
 export default async function (message: Message<true>) {
-    if (message.content.startsWith("!8ball")) {
+    const prefix = currentPrefix()
+    if (message.content.startsWith(prefix + "8ball")) {
         if (!message.guild) return;
         const question = message.content.split(" ")[1];
         if (!question) {
