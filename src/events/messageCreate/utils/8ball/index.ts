@@ -30,7 +30,7 @@ const responses = [
 ];
 
 export default async function (message: Message<true>) {
-    const prefix = currentPrefix();
+    const prefix = currentPrefix(message.channelId);
     if (message.content.startsWith(prefix + "8ball")) {
         if (!message.guild) return;
         const question = message.content.split(" ")[1];

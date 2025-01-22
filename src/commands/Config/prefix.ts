@@ -17,19 +17,19 @@ export const data: CommandData = {
 };
 
 export const run = async ({ interaction, handler }: SlashCommandProps) => {
-    const initPrefix = await currentPrefix();
+    const initPrefix = await currentPrefix(interaction.commandGuildId!);
     const newPrefix = interaction.options.getString("new_prefix");
     if (!newPrefix) {
         return interaction.reply({ content: "Error occured setting prefix. Try again later.", ephemeral: true });
     }
-    changePrefix(newPrefix);
+    changePrefix(newPrefix, interaction.commandGuildId!);
 
     // Making sure the prefix is set on all cases
     handler.reloadCommands("global");
     handler.reloadEvents();
 
     const oldPrefix = inlineCode(`${initPrefix}`);
-    const currPrefix = inlineCode(`${await currentPrefix()}`);
+    const currPrefix = inlineCode(`${await currentPrefix(interaction.commandGuildId!)}`);
     interaction.reply({
         content: `Successfully changed prefix to ${currPrefix} \nOld Prefix: ${oldPrefix}`,
         flags: ["Ephemeral", "SuppressEmbeds"]
