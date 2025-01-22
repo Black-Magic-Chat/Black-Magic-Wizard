@@ -1,7 +1,8 @@
 import "dotenv/config";
 
 import type { CommandData, SlashCommandProps, CommandOptions } from "commandkit";
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, TextChannel } from "discord.js";
+import { client } from "@/index";
 const DISCORD_ENDPOINT = "https://discord.com/api/v10";
 interface BodyData {
     content: string;
@@ -43,15 +44,29 @@ export const run = async ({ interaction }: SlashCommandProps) => {
                 message_id: message_id
             }
         };
-        const res = await fetch(`${DISCORD_ENDPOINT}/channels/${interaction.channelId}/messages`, {
-            method: "POST",
-            headers: { Authorization: `Bot ${process.env.TOKEN}` },
-            body: JSON.stringify(bodyData)
-        });
-        console.log(res);
+        try {
+            const res = await fetch(`${DISCORD_ENDPOINT}/channels/${interaction.channelId}/messages`, {
+                method: "POST",
+                headers: { Authorization: `Bot ${process.env.TOKEN}` },
+                body: JSON.stringify(bodyData)
+            });
+            if (!res.ok) {
+                throw new Error(`Failed to send message: ${res.statusText}`);
+            }
+            console.log(`Message sent: ${res.status}`);
+        } catch (error) {
+            console.error(`Error sending message: ${(error as Error).message}`);
+            return interaction.reply({ content: "Failed to send message.", ephemeral: true });
+        }
         return;
     }
-    return interaction.channel?.send(`${message_text}`);
+    try {
+        const channel = client.channels.cache.get(interaction.channelId) as TextChannel;
+        await channel.send({ content: `${message_text}`, flags: ["SuppressEmbeds"] });
+    } catch (error) {
+        console.error(`Error sending message: ${(error as Error).message}`);
+        return interaction.reply({ content: "Failed to send message.", ephemeral: true });
+    }
 };
 
 export const options: CommandOptions = {
