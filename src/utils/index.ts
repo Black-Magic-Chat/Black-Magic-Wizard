@@ -1,3 +1,1 @@
-declare const prefix: {
-    
-} 
+declare const prefix: {};

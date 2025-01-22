@@ -2,7 +2,7 @@ import { currentPrefix } from "@/utils/prefixConfig";
 import { type Message, EmbedBuilder } from "discord.js";
 
 export default async function (message: Message<true>) {
-    const prefix = currentPrefix()
+    const prefix = currentPrefix();
     if (message.content.startsWith(prefix + "listRoleAll")) {
         if (!message.guild) return;
         try {

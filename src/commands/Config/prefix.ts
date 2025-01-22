@@ -23,15 +23,16 @@ export const run = async ({ interaction, handler }: SlashCommandProps) => {
         return interaction.reply({ content: "Error occured setting prefix. Try again later.", ephemeral: true });
     }
     changePrefix(newPrefix);
-    //Making sure the prefix is set on all cases
+
+    // Making sure the prefix is set on all cases
     handler.reloadCommands("global");
     handler.reloadEvents();
-    
+
     const oldPrefix = inlineCode(`${initPrefix}`);
     const currPrefix = inlineCode(`${await currentPrefix()}`);
     interaction.reply({
         content: `Successfully changed prefix to ${currPrefix} \nOld Prefix: ${oldPrefix}`,
-        ephemeral: true
+        flags: ["Ephemeral", "SuppressEmbeds"]
     });
 };
 
