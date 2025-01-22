@@ -17,19 +17,29 @@ export const data: CommandData = {
 };
 
 export const run = async ({ interaction, handler }: SlashCommandProps) => {
-    const initPrefix = await currentPrefix(interaction.commandGuildId!);
-    const newPrefix = interaction.options.getString("new_prefix");
-    if (!newPrefix) {
-        return interaction.reply({ content: "Error occured setting prefix. Try again later.", ephemeral: true });
+    const previous_prefix = await currentPrefix(interaction.commandGuildId!)
+    const new_prefix = interaction.options.getString("new_prefix");
+    if (!new_prefix) {
+        return interaction.reply({ content: "Error occured setting prefix. Try again later.", flags: ["Ephemeral"] });
     }
-    changePrefix(newPrefix, interaction.commandGuildId!);
+    if (!interaction.commandGuildId) {
+        return interaction.reply({
+            content: `Command was run in an invalid channel/guild ${interaction.commandGuildId}`,
+            flags: ["Ephemeral"]
+        });
+    }
+
+    const { prefix, success, message } = await changePrefix(new_prefix, interaction.commandGuildId!);
+    if (!success) {
+        return interaction.reply({ content: message, flags: ["Ephemeral"] });
+    }
 
     // Making sure the prefix is set on all cases
     handler.reloadCommands("global");
     handler.reloadEvents();
 
-    const oldPrefix = inlineCode(`${initPrefix}`);
-    const currPrefix = inlineCode(`${await currentPrefix(interaction.commandGuildId!)}`);
+    const oldPrefix = inlineCode(`${previous_prefix}`);
+    const currPrefix = inlineCode(`${prefix}`);
     interaction.reply({
         content: `Successfully changed prefix to ${currPrefix} \nOld Prefix: ${oldPrefix}`,
         flags: ["Ephemeral", "SuppressEmbeds"]
