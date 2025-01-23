@@ -1,8 +1,8 @@
-import { currentPrefix } from "@/utils/prefixConfig";
+import { getCurrentPrefix } from "@/utils/prefixConfig";
 import { type Message, EmbedBuilder } from "discord.js";
 
 export default async function (message: Message<true>) {
-    const prefix = await currentPrefix(message.channelId);
+    const prefix = await getCurrentPrefix(message.channelId);
     if (message.content.startsWith(prefix + "roleInfo")) {
         if (!message.guild) return;
 

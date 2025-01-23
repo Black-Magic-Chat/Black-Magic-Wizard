@@ -1,8 +1,8 @@
-import { currentPrefix } from "@/utils/prefixConfig";
+import { getCurrentPrefix } from "@/utils/prefixConfig";
 import { type Message, EmbedBuilder } from "discord.js";
 
 export default function (message: Message<true>) {
-    const prefix = currentPrefix(message.guildId);
+    const prefix = getCurrentPrefix(message.guildId);
     if (message.content.startsWith(prefix + "removeRoleAll")) {
         if (!message.member?.permissions.has("ManageRoles")) {
             return message.reply("You do not have sufficient permissions to manage roles.");

@@ -1,5 +1,5 @@
 import type { CommandData, SlashCommandProps, CommandOptions } from "commandkit";
-import { changePrefix, currentPrefix } from "@/utils/prefixConfig";
+import { changePrefix, getCurrentPrefix } from "@/utils/prefixConfig";
 import { ApplicationCommandOptionType, inlineCode } from "discord.js";
 import "dotenv/config";
 
@@ -17,11 +17,13 @@ export const data: CommandData = {
 };
 
 export const run = async ({ interaction, handler }: SlashCommandProps) => {
-    const previous_prefix = await currentPrefix(interaction.commandGuildId!)
-    const new_prefix = interaction.options.getString("new_prefix");
-    if (!new_prefix) {
-        return interaction.reply({ content: "Error occured setting prefix. Try again later.", flags: ["Ephemeral"] });
+    const getCurrentPrefixValue = await getCurrentPrefix(interaction.commandGuildId!);
+    const newPrefixValue = interaction.options.getString("new_prefix");
+
+    if (!newPrefixValue) {
+        return interaction.reply({ content: "Error occurred setting prefix. Try again later.", flags: ["Ephemeral"] });
     }
+
     if (!interaction.commandGuildId) {
         return interaction.reply({
             content: `Command was run in an invalid channel/guild ${interaction.commandGuildId}`,
@@ -29,7 +31,7 @@ export const run = async ({ interaction, handler }: SlashCommandProps) => {
         });
     }
 
-    const { prefix, success, message } = await changePrefix(new_prefix, interaction.commandGuildId!);
+    const { prefix, success, message } = await changePrefix(newPrefixValue, interaction.commandGuildId!);
     if (!success) {
         return interaction.reply({ content: message, flags: ["Ephemeral"] });
     }
@@ -38,10 +40,10 @@ export const run = async ({ interaction, handler }: SlashCommandProps) => {
     handler.reloadCommands("global");
     handler.reloadEvents();
 
-    const oldPrefix = inlineCode(`${previous_prefix}`);
-    const currPrefix = inlineCode(`${prefix}`);
+    const oldPrefixCode = inlineCode(`${getCurrentPrefixValue}`);
+    const newPrefixCode = inlineCode(`${prefix}`);
     interaction.reply({
-        content: `Successfully changed prefix to ${currPrefix} \nOld Prefix: ${oldPrefix}`,
+        content: `Successfully changed prefix to ${newPrefixCode} \nOld Prefix: ${oldPrefixCode}`,
         flags: ["Ephemeral", "SuppressEmbeds"]
     });
 };

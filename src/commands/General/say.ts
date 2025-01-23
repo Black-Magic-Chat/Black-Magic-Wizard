@@ -2,7 +2,7 @@ import "dotenv/config";
 
 import type { CommandData, SlashCommandProps, CommandOptions } from "commandkit";
 import { ApplicationCommandOptionType, TextChannel } from "discord.js";
-import { client } from "@/index";
+import client from "@/index";
 const DISCORD_ENDPOINT = "https://discord.com/api/v10";
 interface BodyData {
     content: string;
@@ -38,27 +38,21 @@ export const run = async ({ interaction }: SlashCommandProps) => {
         return interaction.reply({ content: "No content given.", ephemeral: true });
     }
     if (message_id) {
-        const bodyData: BodyData = {
-            content: message_text,
-            message_reference: {
-                message_id: message_id
-            }
-        };
         try {
-            const res = await fetch(`${DISCORD_ENDPOINT}/channels/${interaction.channelId}/messages`, {
-                method: "POST",
-                headers: { Authorization: `Bot ${process.env.TOKEN}` },
-                body: JSON.stringify(bodyData)
-            });
-            if (!res.ok) {
-                throw new Error(`Failed to send message: ${res.statusText}`);
+            const channel = client.channels.cache.get(interaction.channelId) as TextChannel;
+            const messageReference = channel.messages.cache.get(message_id);
+            if (!messageReference) {
+                return await channel.send({ content: `${message_text}`, flags: ["SuppressEmbeds"] });
             }
-            console.log(`Message sent: ${res.status}`);
+            return await channel.send({
+                content: `${message_text}`,
+                flags: ["SuppressEmbeds"],
+                reply: { messageReference, failIfNotExists: true }
+            });
         } catch (error) {
             console.error(`Error sending message: ${(error as Error).message}`);
             return interaction.reply({ content: "Failed to send message.", ephemeral: true });
         }
-        return;
     }
     try {
         const channel = client.channels.cache.get(interaction.channelId) as TextChannel;

@@ -16,7 +16,6 @@ const client = new Client({
         IntentsBitField.Flags.MessageContent
     ]
 });
-export { client };
 
 new CommandKit({
     client,
@@ -28,3 +27,5 @@ new CommandKit({
 });
 
 client.login(process.env.TOKEN);
+
+export default client;

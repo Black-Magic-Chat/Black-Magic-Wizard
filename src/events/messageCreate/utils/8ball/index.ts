@@ -1,4 +1,4 @@
-import { currentPrefix } from "@/utils/prefixConfig";
+import { getCurrentPrefix } from "@/utils/prefixConfig";
 import { type Message } from "discord.js";
 
 const responses = [
@@ -30,7 +30,7 @@ const responses = [
 ];
 
 export default async function (message: Message<true>) {
-    const prefix = currentPrefix(message.channelId);
+    const prefix = getCurrentPrefix(message.channelId);
     if (message.content.startsWith(prefix + "8ball")) {
         if (!message.guild) return;
         const question = message.content.split(" ")[1];

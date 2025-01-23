@@ -1,9 +1,14 @@
 import type { Client } from "discord.js";
-import { getAccessToken, checkPlaylist } from "../../utils/checkSongs";
+import { setAccessToken, checkPlaylist } from "../../utils/checkSongs";
 
-export default async function (c: Client<true>) {
-    console.log(`${c.user.username} is ready!`);
-    await getAccessToken();
-    checkPlaylist();
-    setInterval(checkPlaylist, 10000);
+let intervalSet = false;
+
+export default async function (client: Client<true>) {
+    console.log(`${client.user.username} is ready!`);
+    await setAccessToken();
+
+    if (!intervalSet) {
+        setInterval(checkPlaylist, 10000);
+        intervalSet = true;
+    }
 }

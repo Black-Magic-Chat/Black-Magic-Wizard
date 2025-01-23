@@ -1,6 +1,6 @@
 import SpotifyWebApi from "spotify-web-api-node";
 import { TextChannel, EmbedBuilder } from "discord.js";
-import { client } from "..";
+import client from "..";
 import "dotenv/config";
 
 const spotifyApi = new SpotifyWebApi({
@@ -15,8 +15,11 @@ const PLAYLIST_IMAGE =
 
 let lastTracks: string[] = [];
 
-async function getAccessToken() {
+async function setAccessToken() {
     try {
+        const accesToken = spotifyApi.getAccessToken();
+        if (!typeof accesToken === undefined) return;
+        
         const data = await spotifyApi.clientCredentialsGrant();
         spotifyApi.setAccessToken(data.body["access_token"]);
     } catch (err) {
@@ -83,4 +86,4 @@ async function checkPlaylist(): Promise<void> {
     }
 }
 
-export { getAccessToken, checkPlaylist };
+export { setAccessToken, checkPlaylist };
